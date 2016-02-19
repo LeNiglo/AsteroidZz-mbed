@@ -1,24 +1,18 @@
-#include <SFML/Graphics.hpp>
+#include "Game.hpp"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+	std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
+	for (std::size_t i = 0; i < modes.size(); ++i)
+	{
+	    sf::VideoMode mode = modes[i];
+	    std::cout << "Mode #" << i << ": "
+	              << mode.width << "x" << mode.height << " - "
+	              << mode.bitsPerPixel << " bpp" << std::endl;
+	}
 
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }
-
-    return 0;
+    Game *g = new Game();
+	g->loop();
+	delete g;
+    return EXIT_SUCCESS;
 }

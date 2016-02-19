@@ -1,6 +1,9 @@
 NAME =		asteroidzz
 
-SRCS =		src/main.cpp
+SRCS =		src/main.cpp \
+			src/Game.cpp \
+			src/Player.cpp \
+			src/SerialReader.cpp
 
 OBJS =		$(SRCS:.cpp=.o)
 
@@ -20,6 +23,7 @@ all:		$(NAME)
 
 $(NAME):	$(OBJS)
 			$(CXX) -o $(NAME) $(CXXFLAGS) $(OBJS) $(LIBS)
+			@terminal-notifier -title "$(NAME)" -message "Build complete !"
 
 clean:
 			$(RM) $(OBJS)
