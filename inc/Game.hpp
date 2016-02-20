@@ -12,11 +12,15 @@ public:
 	Game(const Game&);
 	~Game();
 
-	void				loop();
-	Player				*getPlayer() const;
+	void					loop();
+	Player					*getPlayer() const;
+	sf::VideoMode			getVideoMode() const;
 private:
-	Player				*player;
-	sf::RenderWindow	*window;
+	static sf::VideoMode	findVideoMode();
+private:
+	Player					*player;
+	sf::RenderWindow		*window;
+	sf::VideoMode			videoMode;
 };
 
 #endif /* _GAME_HPP_ */

@@ -4,6 +4,12 @@
 # include "variables.h"
 # include "includes.h"
 
+#include <iostream>
+#include <istream>
+#include <ostream>
+#include <string>
+#include <boost/asio.hpp>
+
 class SerialReader
 {
 public:
@@ -11,11 +17,14 @@ public:
 	SerialReader(const std::string&);
 	SerialReader(const SerialReader&);
 	~SerialReader();
-	bool					init();
-	std::string				getLine();
-	std::string				getSerial() const;
+	bool						init();
+	void						poke();
+	std::string					getLine();
+	std::string					getSerial() const;
 private:
-	std::string			serial;
+	std::string					serial;
+	boost::asio::io_service		io;
+	boost::asio::serial_port	sp;
 };
 
 #endif /* _SERIALREADER_HPP_ */

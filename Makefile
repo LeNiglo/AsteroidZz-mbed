@@ -10,7 +10,7 @@ OBJS =		$(SRCS:.cpp=.o)
 LIBDIR=		-L/usr/local/lib/
 INCDIR=		-I/usr/local/include/
 
-LIBS =		$(LIBDIR) -lsfml-graphics -lsfml-window -lsfml-system
+LIBS =		$(LIBDIR) -lsfml-graphics -lsfml-window -lsfml-system -lboost_system
 INCLUDES =	$(INCDIR) -I./inc
 
 CXX =		g++

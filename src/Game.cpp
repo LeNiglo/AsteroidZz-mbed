@@ -2,13 +2,15 @@
 
 Game::Game()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(WINDOW_X, WINDOW_Y), WINDOW_TITLE);
+	this->videoMode = Game::findVideoMode();
+	this->window = new sf::RenderWindow(this->videoMode, WINDOW_TITLE);
 	this->player = new Player();
 }
 
 Game::Game(const Game &g)
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(WINDOW_X, WINDOW_Y), WINDOW_TITLE);
+	this->videoMode = g.getVideoMode();
+	this->window = new sf::RenderWindow(this->videoMode, WINDOW_TITLE);
 	this->player = g.getPlayer();
 }
 
@@ -21,23 +23,39 @@ Game::~Game()
 
 void			Game::loop()
 {
-	sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+	while (this->window->isOpen()) {
+		sf::Event event;
+		while (window->pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+			window->close();
+		}
+		this->player->move();
+		window->clear();
+		this->player->draw(window);
+		window->display();
+	}
+}
 
-    while (this->window->isOpen()) {
-        sf::Event event;
-        while (window->pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window->close();
-        }
-
-        window->clear();
-        window->draw(shape);
-        window->display();
-    }
+sf::VideoMode	Game::findVideoMode()
+{
+	std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
+	std::size_t i = modes.size();
+	do {
+		--i;
+		if (modes[i].width >= WINDOW_X) {
+			std::cout << modes[i].width << "x" << modes[i].height << std::endl;
+			return sf::VideoMode(modes[i].width, modes[i].height);
+		}
+	} while(i != 0);
+	return sf::VideoMode(WINDOW_X, WINDOW_Y);
 }
 
 Player*			Game::getPlayer() const
 {
 	return this->player;
+}
+
+sf::VideoMode	Game::getVideoMode() const
+{
+	return this->videoMode;
 }
