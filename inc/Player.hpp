@@ -7,24 +7,43 @@
 
 # include "SerialReader.hpp"
 
+typedef	struct 			s_accel {
+	int					x;
+	int					y;
+	int					z;
+	bool				up;
+	bool				right;
+	bool				down;
+	bool				left;
+	bool				fire;
+}						t_accel;
+
 class Player
 {
 public:
 	Player();
 	Player(const std::string&);
-	Player(const Player&);
 	~Player();
-	std::string		getName() const;
-	int				getX() const;
-	int				getY() const;
-	bool			move();
-	void			draw(sf::RenderWindow*);
+	void				move();
+	void 				hit();
+	void				draw(sf::RenderWindow*);
+	bool				isAlive();
+	std::string			getName() const;
+	int					getX() const;
+	int					getY() const;
+	int					getLife() const;
+	sf::RectangleShape	*getBody() const;
 private:
-	SerialReader	*serial;
-	std::string		name;
-	int				x;
-	int				y;
-	sf::CircleShape	*shape;
+	bool				initSerial();
+	void				getAccelData(t_accel*);
+private:
+	SerialReader		*serial;
+	std::string			name;
+	float				x;
+	float				y;
+	int					life;
+	sf::RectangleShape	*body;
 };
+
 
 #endif /* _PLAYER_HPP_ */

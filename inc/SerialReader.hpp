@@ -9,13 +9,12 @@
 #include <ostream>
 #include <string>
 #include <boost/asio.hpp>
+#include <boost/filesystem.hpp>
 
 class SerialReader
 {
 public:
 	SerialReader();
-	SerialReader(const std::string&);
-	SerialReader(const SerialReader&);
 	~SerialReader();
 	bool						init();
 	void						poke();
@@ -24,7 +23,7 @@ public:
 private:
 	std::string					serial;
 	boost::asio::io_service		io;
-	boost::asio::serial_port	sp;
+	boost::asio::serial_port	*sp;
 };
 
 #endif /* _SERIALREADER_HPP_ */

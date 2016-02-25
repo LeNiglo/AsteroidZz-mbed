@@ -5,13 +5,7 @@ Game::Game()
 	this->videoMode = Game::findVideoMode();
 	this->window = new sf::RenderWindow(this->videoMode, WINDOW_TITLE);
 	this->player = new Player();
-}
-
-Game::Game(const Game &g)
-{
-	this->videoMode = g.getVideoMode();
-	this->window = new sf::RenderWindow(this->videoMode, WINDOW_TITLE);
-	this->player = g.getPlayer();
+	this->asteroids = std::list<Asteroid*>();
 }
 
 Game::~Game()
@@ -23,16 +17,69 @@ Game::~Game()
 
 void			Game::loop()
 {
-	while (this->window->isOpen()) {
-		sf::Event event;
-		while (window->pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
-			window->close();
+	this->window->setVerticalSyncEnabled(true);
+	this->delta = this->next = 0;
+	while (this->window->isOpen() && this->player->isAlive()) {
+		if (!this->eventHandling()) {
+			break;
 		}
-		this->player->move();
-		window->clear();
-		this->player->draw(window);
-		window->display();
+		this->move();
+		this->draw();
+		this->factory();
+	}
+}
+
+bool			Game::eventHandling()
+{
+	sf::Event event;
+	while (window->pollEvent(event)) {
+		if (event.type == sf::Event::Closed) {
+			window->close();
+			return false;
+		}
+		if (event.type == sf::Event::KeyPressed) {
+			if (event.key.code == sf::Keyboard::Escape) {
+				window->close();
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void 			Game::move()
+{
+	this->player->move();
+	std::list<Asteroid*>::iterator it;
+	for (it = this->asteroids.begin(); it != this->asteroids.end(); it++) {
+		if (!(*it)->move(*this->player)) {
+			Asteroid *ptr = *it;
+			this->asteroids.erase(it);
+			delete ptr;
+		}
+	}
+
+}
+
+void 			Game::draw()
+{
+	this->window->clear();
+	std::list<Asteroid*>::iterator it;
+	for (it = this->asteroids.begin(); it != this->asteroids.end(); it++) {
+		(*it)->draw(window);
+	}
+	this->player->draw(window);
+	this->window->display();
+}
+
+void 			Game::factory()
+{
+	if (this->delta >= this->next) {
+		this->asteroids.push_back(new Asteroid());
+		this->next = rand() % ASTEROID_CYCLES + 1;
+		this->delta = 0;
+	} else {
+		++this->delta;
 	}
 }
 
@@ -49,6 +96,10 @@ sf::VideoMode	Game::findVideoMode()
 	} while(i != 0);
 	return sf::VideoMode(WINDOW_X, WINDOW_Y);
 }
+
+/**
+*	GETTERS
+*/
 
 Player*			Game::getPlayer() const
 {

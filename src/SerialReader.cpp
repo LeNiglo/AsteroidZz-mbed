@@ -1,55 +1,64 @@
 #include "SerialReader.hpp"
 
 SerialReader::SerialReader()
-: io(), sp(io, SERIAL_PORT)
+: io()
 {
-	this->serial = SERIAL_PORT;
-}
-
-SerialReader::SerialReader(const std::string &serial)
-: io(), sp(io, serial)
-{
-	this->serial = serial;
-}
-
-SerialReader::SerialReader(const SerialReader &sr)
-: io(), sp(io, sr.getSerial())
-{
-	this->serial = sr.getSerial();
+	if (boost::filesystem::exists(SERIAL_PORT1)) {
+		this->sp = new boost::asio::serial_port(io, SERIAL_PORT1);
+		this->serial = SERIAL_PORT1;
+	} else if (boost::filesystem::exists(SERIAL_PORT2)) {
+		this->sp = new boost::asio::serial_port(io, SERIAL_PORT2);
+		this->serial = SERIAL_PORT2;
+	} else {
+		std::cerr << "No MBED Joypad found on port " << SERIAL_PORT1 << " nor port " << SERIAL_PORT2 << "." << std::endl;
+	}
 }
 
 SerialReader::~SerialReader()
 {
-	this->sp.close();
+	this->sp->close();
+	delete this->sp;
 }
 
 bool					SerialReader::init()
 {
-	this->sp.set_option(boost::asio::serial_port_base::baud_rate(SERIAL_BAUD));
+	if (!sp->is_open()) {
+		return false;
+	}
+	this->sp->set_option(boost::asio::serial_port_base::baud_rate(SERIAL_BAUD));
 	return true;
 }
 
 void					SerialReader::poke()
 {
-	boost::asio::write(this->sp, boost::asio::buffer("m", 1));
+	if (sp->is_open()) {
+		boost::asio::write(*this->sp, boost::asio::buffer("m", 1));
+	}
 }
 
 std::string				SerialReader::getLine()
 {
-	char c;
-	std::string result = "";
-	for(;;) {
-		boost::asio::read(this->sp, boost::asio::buffer(&c, 1));
-		switch(c) {
-			case '\r':
+	if (sp->is_open()) {
+		char c;
+		std::string result = "";
+		for(;;) {
+			boost::asio::read(*this->sp, boost::asio::buffer(&c, 1));
+			switch(c) {
+				case '\r':
 				break;
-			case '\n':
+				case '\n':
 				return result;
-			default:
+				default:
 				result += c;
+			}
 		}
 	}
+	return NULL;
 }
+
+/**
+*	GETTERS
+*/
 
 std::string				SerialReader::getSerial() const
 {

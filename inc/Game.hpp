@@ -4,15 +4,19 @@
 # include "variables.h"
 # include "includes.h"
 # include "Player.hpp"
+# include "Asteroid.hpp"
 
 class Game
 {
 public:
 	Game();
-	Game(const Game&);
 	~Game();
 
 	void					loop();
+	void					draw();
+	void					move();
+	void					factory();
+	bool					eventHandling();
 	Player					*getPlayer() const;
 	sf::VideoMode			getVideoMode() const;
 private:
@@ -21,6 +25,9 @@ private:
 	Player					*player;
 	sf::RenderWindow		*window;
 	sf::VideoMode			videoMode;
+	std::list<Asteroid*>	asteroids;
+	unsigned int			delta;
+	unsigned short int		next;
 };
 
 #endif /* _GAME_HPP_ */
