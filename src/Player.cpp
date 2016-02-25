@@ -26,15 +26,14 @@ bool				Player::initSerial()
 		this->serial = new SerialReader();
 		if (!this->serial->init()) {
 			std::cerr << "SerialReader init failed." << std::endl;
+			this->life = -1;
 			return false;
 		}
 		return true;
-	} catch(boost::system::system_error& e) {
-		if (this->serial != NULL) {
-			delete this->serial;
-		}
+	} catch(std::exception& e) {
 		this->serial = NULL;
 		std::cerr << "Error: " << e.what() << std::endl;
+		this->life = -1;
 		return false;
 	}
 }
@@ -44,7 +43,7 @@ void 				Player::hit()
 	--this->life;
 }
 
-void				Player::move()
+void				Player::move(const Game *game)
 {
 	try {
 		t_accel data;
@@ -53,8 +52,8 @@ void				Player::move()
 		if (abs(data.y) > ACCEL_THRESHOLD) { this->x += (float) data.y * (data.fire ? 2 : 1) / ACCEL_SCALE; }
 		if (abs(data.x) > ACCEL_THRESHOLD) { this->y += (float) data.x * (data.fire ? 2 : 1) / ACCEL_SCALE; }
 
-		this->x = (this->x + PLAYER_SIZE_X > WINDOW_X ? WINDOW_X - PLAYER_SIZE_X : (this->x < 0 ? 0 : this->x));
-		this->y = (this->y + PLAYER_SIZE_Y > WINDOW_Y ? WINDOW_Y - PLAYER_SIZE_Y : (this->y < 0 ? 0 : this->y));
+		this->x = (this->x + PLAYER_SIZE_X > static_cast<int>(game->getVideoMode().width) ? static_cast<int>(game->getVideoMode().width) - PLAYER_SIZE_X : (this->x < 0 ? 0 : this->x));
+		this->y = (this->y + PLAYER_SIZE_Y > static_cast<int>(game->getVideoMode().height) ? static_cast<int>(game->getVideoMode().height) - PLAYER_SIZE_Y : (this->y < 0 ? 0 : this->y));
 	} catch(boost::bad_lexical_cast& e) {
 		std::cerr << "Error: " << e.what() << std::endl;
 	}

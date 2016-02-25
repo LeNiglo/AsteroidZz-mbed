@@ -1,15 +1,15 @@
 #ifndef	_SERIALREADER_HPP_
 # define _SERIALREADER_HPP_
 
-# include "variables.h"
-# include "includes.h"
-
 #include <iostream>
 #include <istream>
 #include <ostream>
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/filesystem.hpp>
+
+# include "variables.h"
+# include "includes.h"
 
 class SerialReader
 {

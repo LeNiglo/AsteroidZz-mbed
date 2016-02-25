@@ -3,6 +3,7 @@
 
 # include "variables.h"
 # include "includes.h"
+
 # include "Player.hpp"
 # include "Asteroid.hpp"
 
@@ -19,13 +20,20 @@ public:
 	bool					eventHandling();
 	Player					*getPlayer() const;
 	sf::VideoMode			getVideoMode() const;
+	bool					getKiaiTime() const;
+	unsigned long int		getScore() const;
 private:
 	static sf::VideoMode	findVideoMode();
 private:
 	Player					*player;
 	sf::RenderWindow		*window;
 	sf::VideoMode			videoMode;
+	sf::Font				font;
+	sf::Text				scoreText;
 	std::list<Asteroid*>	asteroids;
+	unsigned long int		score;
+	bool					kiaiTime;
+	unsigned int			nextKiai;
 	unsigned int			delta;
 	unsigned short int		next;
 };

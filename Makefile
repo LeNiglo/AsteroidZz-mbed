@@ -41,7 +41,7 @@ fclean:		clean
 
 re:			fclean $(NAME)
 
-run:		$(NAME)
+run:		re
 			@./$(NAME)
 
 .PHONY:		fclean clean all re run

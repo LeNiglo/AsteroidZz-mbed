@@ -1,9 +1,9 @@
 #ifndef _PLAYER_HPP_
 # define _PLAYER_HPP_
 
+# include <boost/lexical_cast.hpp>
 # include "variables.h"
 # include "includes.h"
-# include <boost/lexical_cast.hpp>
 
 # include "SerialReader.hpp"
 
@@ -24,7 +24,7 @@ public:
 	Player();
 	Player(const std::string&);
 	~Player();
-	void				move();
+	void				move(const Game*);
 	void 				hit();
 	void				draw(sf::RenderWindow*);
 	bool				isAlive();
@@ -45,5 +45,6 @@ private:
 	sf::RectangleShape	*body;
 };
 
+# include "Game.hpp"
 
 #endif /* _PLAYER_HPP_ */

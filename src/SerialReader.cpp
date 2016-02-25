@@ -11,6 +11,7 @@ SerialReader::SerialReader()
 		this->serial = SERIAL_PORT2;
 	} else {
 		std::cerr << "No MBED Joypad found on port " << SERIAL_PORT1 << " nor port " << SERIAL_PORT2 << "." << std::endl;
+		throw MbedIOException();
 	}
 }
 

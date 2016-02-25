@@ -8,4 +8,10 @@
 # include <SFML/System.hpp>
 # include <SFML/Window.hpp>
 
+# include "MbedIOException.hpp"
+
+class Game;
+class Asteroid;
+class Player;
+
 #endif /* _INCLUDES_H_ */
