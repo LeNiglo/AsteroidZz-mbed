@@ -17,6 +17,6 @@
 
 # define ASTEROID_SIZE_X 10
 # define ASTEROID_SIZE_Y 10
-# define ASTEROID_CYCLES 100
+# define ASTEROID_CYCLES 50
 
 #endif /* _VARIABLES_H_ */

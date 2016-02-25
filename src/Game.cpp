@@ -50,12 +50,14 @@ bool			Game::eventHandling()
 void 			Game::move()
 {
 	this->player->move();
-	std::list<Asteroid*>::iterator it;
-	for (it = this->asteroids.begin(); it != this->asteroids.end(); it++) {
+	std::list<Asteroid*>::iterator it = this->asteroids.begin();
+	while (it != this->asteroids.end()) {
 		if (!(*it)->move(*this->player)) {
 			Asteroid *ptr = *it;
-			this->asteroids.erase(it);
+			it = this->asteroids.erase(it);
 			delete ptr;
+		} else {
+			++it;
 		}
 	}
 
