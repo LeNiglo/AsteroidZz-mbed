@@ -89,7 +89,12 @@ void 					Game::draw()
 	this->player->draw(window, this);
 
 	std::stringstream ss;
-	ss << "SCORE: " << this->score << "\nAMMO: " << this->player->getAmmo();
+	ss << "SCORE: " << this->score;
+	if (this->player->getAmmo() > 0) {
+		ss << "\nAMMO: " << this->player->getAmmo();
+	} else {
+		ss << "\nRELOADING ...";
+	}
 	this->scoreText.setString(ss.str());
 
 	this->window->draw(this->scoreText);
@@ -104,7 +109,7 @@ void 					Game::factory()
 {
 	if (this->delta >= this->next) {
 		this->asteroids.push_back(new Asteroid(this));
-		this->next = rand() % (ASTEROID_CYCLES / (this->kiaiTime ? 10 : 1)) + 1;
+		this->next = rand() % (ASTEROID_CYCLES / (this->kiaiTime ? 5 : 1)) + 1;
 		this->delta = 0;
 	} else {
 		++this->delta;

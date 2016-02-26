@@ -10,7 +10,9 @@ Player::Player(const std::string &name)
 	this->life = 1;
 	this->ammo = PLAYER_SHOT_AMMO;
 	this->shots = std::list<Shot*>();
-	this->body = new sf::RectangleShape(sf::Vector2f(PLAYER_SIZE_X, PLAYER_SIZE_Y));
+	this->body = new sf::RectangleShape(sf::Vector2f(PLAYER_SIZE_X - 1, PLAYER_SIZE_Y - 1));
+	this->body->setOutlineColor(sf::Color::White);
+	this->body->setOutlineThickness(1);
 	this->initSerial();
 }
 
