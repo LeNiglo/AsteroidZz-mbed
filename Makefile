@@ -4,6 +4,7 @@ SRCS =		src/main.cpp \
 			src/Game.cpp \
 			src/Player.cpp \
 			src/Asteroid.cpp \
+			src/Shot.cpp \
 			src/SerialReader.cpp
 
 OBJS =		$(SRCS:.cpp=.o)

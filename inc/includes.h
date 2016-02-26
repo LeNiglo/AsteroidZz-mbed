@@ -13,5 +13,6 @@
 class Game;
 class Asteroid;
 class Player;
+class Shot;
 
 #endif /* _INCLUDES_H_ */

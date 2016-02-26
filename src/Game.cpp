@@ -10,7 +10,7 @@ Game::Game()
 	this->nextKiai = 0;
 	this->kiaiTime = false;
 	if (!this->font.loadFromFile("./resources/ChaparralPro-Regular.otf")) {
-		std::cerr << "Can't find the font" << std::endl;
+		std::cerr << "Can't find the font to load." << std::endl;
 	}
 	this->scoreText.setFont(this->font);
 	this->scoreText.setCharacterSize(50);
@@ -23,10 +23,16 @@ Game::~Game()
 {
 	delete this->window;
 	delete this->player;
-	std::cout << "Game finished." << std::endl;
+	std::list<Asteroid*>::iterator it = this->asteroids.begin();
+	while (it != this->asteroids.end()) {
+		Asteroid *ptr = *it;
+		it = this->asteroids.erase(it);
+		delete ptr;
+	}
+	std::cout << "Game finished, score = " << this->score << "." << std::endl;
 }
 
-void				Game::loop()
+void					Game::loop()
 {
 	this->window->setVerticalSyncEnabled(true);
 	this->delta = this->next = 0;
@@ -40,7 +46,7 @@ void				Game::loop()
 	}
 }
 
-bool				Game::eventHandling()
+bool					Game::eventHandling()
 {
 	sf::Event event;
 	while (window->pollEvent(event)) {
@@ -58,7 +64,7 @@ bool				Game::eventHandling()
 	return true;
 }
 
-void 				Game::move()
+void 					Game::move()
 {
 	this->player->move(this);
 	std::list<Asteroid*>::iterator it = this->asteroids.begin();
@@ -71,20 +77,19 @@ void 				Game::move()
 			++it;
 		}
 	}
-
 }
 
-void 				Game::draw()
+void 					Game::draw()
 {
 	this->window->clear();
 	std::list<Asteroid*>::iterator it;
 	for (it = this->asteroids.begin(); it != this->asteroids.end(); it++) {
 		(*it)->draw(window);
 	}
-	this->player->draw(window);
+	this->player->draw(window, this);
 
 	std::stringstream ss;
-	ss << "SCORE: " << this->score;
+	ss << "SCORE: " << this->score << "\nAMMO: " << this->player->getAmmo();
 	this->scoreText.setString(ss.str());
 
 	this->window->draw(this->scoreText);
@@ -95,7 +100,7 @@ void 				Game::draw()
 	this->window->display();
 }
 
-void 				Game::factory()
+void 					Game::factory()
 {
 	if (this->delta >= this->next) {
 		this->asteroids.push_back(new Asteroid(this));
@@ -107,6 +112,10 @@ void 				Game::factory()
 
 	++this->score;
 	if (this->score > KIAI_THRESHOLD && this->score % (KIAI_THRESHOLD + this->nextKiai) < KIAI_DURATION) {
+		if (this->kiaiTime == false) {
+			// TODO KIAI STARTS ! Play a sound ?
+			std::cout << "KIAI TIME !" << std::endl;
+		}
 		this->kiaiTime = true;
 	} else {
 		if (this->kiaiTime == true) {
@@ -116,7 +125,18 @@ void 				Game::factory()
 	}
 }
 
-sf::VideoMode		Game::findVideoMode()
+void					Game::checkShot(Shot *shot)
+{
+	std::list<Asteroid*>::iterator it;
+	for (it = this->asteroids.begin(); it != this->asteroids.end(); it++) {
+		if (shot->intersects(*it)) {
+			(*it)->destroy();
+			this->score += ASTEROID_POINTS;
+		}
+	}
+}
+
+sf::VideoMode			Game::findVideoMode()
 {
 	std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
 	std::size_t i = modes.size();
@@ -134,22 +154,22 @@ sf::VideoMode		Game::findVideoMode()
 *	GETTERS
 */
 
-Player*				Game::getPlayer() const
+Player*					Game::getPlayer() const
 {
 	return this->player;
 }
 
-sf::VideoMode		Game::getVideoMode() const
+sf::VideoMode			Game::getVideoMode() const
 {
 	return this->videoMode;
 }
 
-bool				Game::getKiaiTime() const
+bool					Game::getKiaiTime() const
 {
 	return this->kiaiTime;
 }
 
-unsigned long int	Game::getScore() const
+unsigned long int		Game::getScore() const
 {
 	return this->score;
 }

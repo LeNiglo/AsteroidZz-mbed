@@ -16,6 +16,8 @@ public:
 	sf::RectangleShape 		*getBody() const;
 	int						getX() const;
 	int						getY() const;
+	int						getSize() const;
+	void					destroy();
 private:
 	bool					intersects(const Player*);
 private:

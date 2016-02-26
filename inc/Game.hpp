@@ -22,6 +22,7 @@ public:
 	sf::VideoMode			getVideoMode() const;
 	bool					getKiaiTime() const;
 	unsigned long int		getScore() const;
+	void					checkShot(Shot*);
 private:
 	static sf::VideoMode	findVideoMode();
 private:

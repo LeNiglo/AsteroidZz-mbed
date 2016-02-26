@@ -8,8 +8,9 @@ Player::Player(const std::string &name)
 	this->x = (WINDOW_X - PLAYER_SIZE_X) / 2;
 	this->y = (WINDOW_Y - PLAYER_SIZE_Y) / 2;
 	this->life = 1;
+	this->ammo = PLAYER_SHOT_AMMO;
+	this->shots = std::list<Shot*>();
 	this->body = new sf::RectangleShape(sf::Vector2f(PLAYER_SIZE_X, PLAYER_SIZE_Y));
-	this->body->setFillColor(sf::Color::Red);
 	this->initSerial();
 }
 
@@ -43,7 +44,7 @@ void 				Player::hit()
 	--this->life;
 }
 
-void				Player::move(const Game *game)
+void				Player::move(Game *game)
 {
 	try {
 		t_accel data;
@@ -54,9 +55,48 @@ void				Player::move(const Game *game)
 
 		this->x = (this->x + PLAYER_SIZE_X > static_cast<int>(game->getVideoMode().width) ? static_cast<int>(game->getVideoMode().width) - PLAYER_SIZE_X : (this->x < 0 ? 0 : this->x));
 		this->y = (this->y + PLAYER_SIZE_Y > static_cast<int>(game->getVideoMode().height) ? static_cast<int>(game->getVideoMode().height) - PLAYER_SIZE_Y : (this->y < 0 ? 0 : this->y));
+
+		this->handleShots(&data);
+		std::list<Shot*>::iterator it = this->shots.begin();
+		while (it != this->shots.end()) {
+			if (!(*it)->move(game)) {
+				Shot *ptr = *it;
+				it = this->shots.erase(it);
+				delete ptr;
+			} else {
+				++it;
+			}
+		}
 	} catch(boost::bad_lexical_cast& e) {
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
+}
+
+void 				Player::handleShots(t_accel *data)
+{
+	if (this->ammo > 0) {
+		if (this->pClock.getElapsedTime().asMilliseconds() > PLAYER_SHOT_DELTA) {
+			if (data->up || data->right || data->down || data->left) {
+				this->shoot(data);
+				this->pClock.restart();
+			}
+		}
+	} else {
+		if (this->pClock.getElapsedTime().asMilliseconds() > (PLAYER_SHOT_DELTA * PLAYER_SHOT_AMMO)) {
+			this->ammo = PLAYER_SHOT_AMMO;
+			std::cout << "RELOADING" << std::endl;
+		}
+	}
+}
+
+void 				Player::shoot(t_accel *data)
+{
+	int incX = data->right ? 5 : data->left ? -5 : 0;
+	int incY = data->up ? -5 : data->down ? 5 : 0;
+	int posX = this->x + (PLAYER_SIZE_X - PLAYER_SHOT_SIZE) / 2;
+	int posY = this->y + (PLAYER_SIZE_Y - PLAYER_SHOT_SIZE) / 2;
+	this->shots.push_back(new Shot(posX, posY, incX, incY));
+	--this->ammo;
 }
 
 void				Player::getAccelData(t_accel *data)
@@ -90,15 +130,24 @@ void				Player::getAccelData(t_accel *data)
 	data->fire = boost::lexical_cast<bool>(sFire) == 0 ? false : true;
 }
 
-void 				Player::draw(sf::RenderWindow *window)
+void 				Player::draw(sf::RenderWindow *window, const Game *game)
 {
+	std::list<Shot*>::iterator it = this->shots.begin();
+	while (it != this->shots.end()) {
+		(*it++)->draw(window);
+	}
+	if (game->getKiaiTime()) {
+		this->body->setFillColor(sf::Color::Red);
+	} else {
+		this->body->setFillColor(sf::Color::Blue);
+	}
 	this->body->setPosition(this->x, this->y);
 	window->draw(*this->body);
 }
 
 /**
- *	GETTERS
- */
+*	GETTERS
+*/
 
 bool				Player::isAlive()
 {
@@ -123,6 +172,11 @@ int					Player::getY() const
 int					Player::getLife() const
 {
 	return this->life;
+}
+
+int					Player::getAmmo() const
+{
+	return this->ammo;
 }
 
 sf::RectangleShape*	Player::getBody() const

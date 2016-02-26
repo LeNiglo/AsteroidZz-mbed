@@ -2,12 +2,12 @@
 
 Asteroid::Asteroid(const Game *game)
 {
-	this->size = ASTEROID_SIZE + static_cast<int>(game->getScore() / 1000);
+	this->size = ASTEROID_SIZE + static_cast<int>(game->getScore() / ASTEROID_RATIO);
 	this->body = new sf::RectangleShape(sf::Vector2f(this->size, this->size));
 	this->body->setFillColor(sf::Color(100 + rand() % 156, 100 + rand() % 156, 100 + rand() % 156));
 
 	this->a = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX)) - 0.5f;
-	this->b = rand() % WINDOW_Y;
+	this->b = rand() % game->getVideoMode().height;
 	if (rand() % 2 == 1) {
 		this->direction = true;
 		this->x = 0;
@@ -30,10 +30,9 @@ void					Asteroid::draw(sf::RenderWindow *window)
 
 bool					Asteroid::move(Player *player, const Game *game)
 {
-	this->x += (this->direction ? 1 : -1) * (game->getKiaiTime() ? 2 : 1);
+	this->x += (this->direction ? 1 : -1) * (game->getKiaiTime() ? 2 : 1) * WINDOW_SPEED;
 
 	if (this->intersects(player)) {
-		std::cout << "TOUCHED !" << std::endl;
 		player->hit();
 	}
 
@@ -51,9 +50,14 @@ bool					Asteroid::intersects(const Player *player)
 	return r1.intersects(r2);
 }
 
+void					Asteroid::destroy()
+{
+	this->x = -1000;
+}
+
 /**
- *	GETTERS
- */
+*	GETTERS
+*/
 
 sf::RectangleShape*		Asteroid::getBody() const
 {
@@ -68,4 +72,9 @@ int						Asteroid::getX() const
 int						Asteroid::getY() const
 {
 	return static_cast<int>(this->a * this->x + this->b);
+}
+
+int						Asteroid::getSize() const
+{
+	return this->size;
 }
