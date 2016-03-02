@@ -3,12 +3,15 @@
 Game::Game()
 {
 	this->videoMode = Game::findVideoMode();
-	this->window = new sf::RenderWindow(this->videoMode, WINDOW_TITLE);
+	this->soundManager = new SoundManager();
 	this->player = new Player();
 	this->asteroids = std::list<Asteroid*>();
 	this->score = 0;
 	this->nextKiai = 0;
 	this->kiaiTime = false;
+	if (!this->soundManager->init()) {
+		std::cerr << "Can't load all sounds." << std::endl;
+	}
 	if (!this->font.loadFromFile("./resources/ChaparralPro-Regular.otf")) {
 		std::cerr << "Can't find the font to load." << std::endl;
 	}
@@ -17,12 +20,14 @@ Game::Game()
 	this->scoreText.setColor(sf::Color::White);
 	this->scoreText.setStyle(sf::Text::Bold);
 	this->scoreText.setPosition(15, 0);
+	this->window = new sf::RenderWindow(this->videoMode, WINDOW_TITLE);
 }
 
 Game::~Game()
 {
 	delete this->window;
 	delete this->player;
+	delete this->soundManager;
 	std::list<Asteroid*>::iterator it = this->asteroids.begin();
 	while (it != this->asteroids.end()) {
 		Asteroid *ptr = *it;
@@ -96,7 +101,6 @@ void 					Game::draw()
 		ss << "\nRELOADING ...";
 	}
 	this->scoreText.setString(ss.str());
-
 	this->window->draw(this->scoreText);
 
 	if (this->kiaiTime) {
@@ -118,8 +122,7 @@ void 					Game::factory()
 	++this->score;
 	if (this->score > KIAI_THRESHOLD && this->score % (KIAI_THRESHOLD + this->nextKiai) < KIAI_DURATION) {
 		if (this->kiaiTime == false) {
-			// TODO KIAI STARTS ! Play a sound ?
-			std::cout << "KIAI TIME !" << std::endl;
+			this->soundManager->playKiai();
 		}
 		this->kiaiTime = true;
 	} else {
@@ -135,8 +138,10 @@ void					Game::checkShot(Shot *shot)
 	std::list<Asteroid*>::iterator it;
 	for (it = this->asteroids.begin(); it != this->asteroids.end(); it++) {
 		if (shot->intersects(*it)) {
+			this->score += ASTEROID_POINTS + (this->kiaiTime ? (*it)->getSize() * 2 : (*it)->getSize());
+			shot->destroy();
 			(*it)->destroy();
-			this->score += ASTEROID_POINTS;
+			this->soundManager->playDestroy();
 		}
 	}
 }
@@ -177,4 +182,9 @@ bool					Game::getKiaiTime() const
 unsigned long int		Game::getScore() const
 {
 	return this->score;
+}
+
+SoundManager*			Game::getSoundManager() const
+{
+	return this->soundManager;
 }

@@ -58,7 +58,7 @@ void				Player::move(Game *game)
 		this->x = (this->x + PLAYER_SIZE_X > static_cast<int>(game->getVideoMode().width) ? static_cast<int>(game->getVideoMode().width) - PLAYER_SIZE_X : (this->x < 0 ? 0 : this->x));
 		this->y = (this->y + PLAYER_SIZE_Y > static_cast<int>(game->getVideoMode().height) ? static_cast<int>(game->getVideoMode().height) - PLAYER_SIZE_Y : (this->y < 0 ? 0 : this->y));
 
-		this->handleShots(&data);
+		this->handleShots(game, &data);
 		std::list<Shot*>::iterator it = this->shots.begin();
 		while (it != this->shots.end()) {
 			if (!(*it)->move(game)) {
@@ -74,19 +74,20 @@ void				Player::move(Game *game)
 	}
 }
 
-void 				Player::handleShots(t_accel *data)
+void 				Player::handleShots(Game *game, t_accel *data)
 {
 	if (this->ammo > 0) {
 		if (this->pClock.getElapsedTime().asMilliseconds() > PLAYER_SHOT_DELTA) {
 			if (data->up || data->right || data->down || data->left) {
 				this->shoot(data);
+				game->getSoundManager()->playShot();
 				this->pClock.restart();
 			}
 		}
 	} else {
 		if (this->pClock.getElapsedTime().asMilliseconds() > (PLAYER_SHOT_DELTA * PLAYER_SHOT_AMMO)) {
 			this->ammo = PLAYER_SHOT_AMMO;
-			std::cout << "RELOADING" << std::endl;
+			game->getSoundManager()->playReload();
 		}
 	}
 }

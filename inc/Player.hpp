@@ -26,7 +26,7 @@ public:
 	~Player();
 	void				move(Game*);
 	void 				hit();
-	void 				handleShots(t_accel*);
+	void 				handleShots(Game*, t_accel*);
 	void				shoot(t_accel*);
 	void				draw(sf::RenderWindow*, const Game*);
 	bool				isAlive();

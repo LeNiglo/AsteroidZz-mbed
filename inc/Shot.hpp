@@ -10,6 +10,7 @@ class Shot {
 public:
 	Shot(const int&, const int&, const int&, const int&);
 	~Shot();
+	void				destroy();
 	bool 				move(Game*);
 	bool				intersects(const Asteroid*);
 	void 				draw(sf::RenderWindow*);

@@ -25,7 +25,7 @@ private:
 	int						x;
 	bool					direction;
 	float					a;
-	unsigned short int		b;
+	short int				b;
 	sf::RectangleShape 		*body;
 };
 

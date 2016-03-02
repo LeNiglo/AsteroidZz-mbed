@@ -7,10 +7,10 @@ Asteroid::Asteroid(const Game *game)
 	this->body->setFillColor(sf::Color(100 + rand() % 156, 100 + rand() % 156, 100 + rand() % 156));
 
 	this->a = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX)) - 0.5f;
-	this->b = rand() % game->getVideoMode().height;
+	this->b = rand() % (game->getVideoMode().height + 2 * this->size) - this->size;
 	if (rand() % 2 == 1) {
 		this->direction = true;
-		this->x = 0;
+		this->x = -this->size;
 	} else {
 		this->direction = false;
 		this->x = static_cast<int>(game->getVideoMode().width);
@@ -36,7 +36,7 @@ bool					Asteroid::move(Player *player, const Game *game)
 		player->hit();
 	}
 
-	if (this->x > static_cast<int>(game->getVideoMode().width) || this->x < 0) {
+	if (this->x > static_cast<int>(game->getVideoMode().width) || this->x < -this->size) {
 		return false;
 	} else {
 		return true;

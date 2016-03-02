@@ -15,6 +15,11 @@ Shot::~Shot()
 
 }
 
+void			Shot::destroy()
+{
+	this->x = -1000;
+}
+
 bool 		Shot::move(Game *game)
 {
 	this->x += incX * WINDOW_SPEED;

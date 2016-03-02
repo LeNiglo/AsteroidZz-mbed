@@ -25,6 +25,6 @@
 # define ASTEROID_RATIO 500
 
 # define KIAI_THRESHOLD 2000
-# define KIAI_DURATION 400
+# define KIAI_DURATION 600
 
 #endif /* _VARIABLES_H_ */
