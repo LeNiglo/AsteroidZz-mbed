@@ -25,7 +25,13 @@ add_executable(${PROJECT_NAME} ${ALL_SRCS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
 
-file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${PROJECT_BINARY_DIR})
+if (CMAKE_GENERATOR STREQUAL Xcode)
+	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION "${PROJECT_BINARY_DIR}/Debug/.")
+	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION "${PROJECT_BINARY_DIR}/Release/.")
+else ()
+	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${PROJECT_BINARY_DIR})
+endif ()
+
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
@@ -35,14 +41,20 @@ find_package(SFML 2 REQUIRED system window graphics network audio)
 if (SFML_FOUND)
 	include_directories(${SFML_INCLUDE_DIR})
 	target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
-endif()
+endif ()
 
 # boost::filesystem
 find_package(Boost 1.34.0 REQUIRED system filesystem)
 if (Boost_FOUND)
 	include_directories(${Boost_INCLUDE_DIRS})
 	target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-endif()
+endif ()
+
+find_package(Lua51 REQUIRED)
+if (LUA_FOUND)
+	include_directories(${LUA_INCLUDE_DIRS})
+	target_link_libraries(${PROJECT_NAME} ${LUA_LIBRAIRIES})
+endif ()
 
 
 # Install target
