@@ -102,6 +102,9 @@ void 					Game::draw()
 	} else {
 		ss << "\nRELOADING ...";
 	}
+	if (this->kiaiTime) {
+		ss << "\nKIAI TIME !";
+	}
 	this->scoreText.setString(ss.str());
 	this->window->draw(this->scoreText);
 
@@ -137,14 +140,26 @@ void 					Game::factory()
 
 void					Game::checkShot(Shot *shot)
 {
+	Asteroid *a = NULL;
+	Asteroid *b = NULL;
+
 	std::list<Asteroid*>::iterator it;
 	for (it = this->asteroids.begin(); it != this->asteroids.end(); it++) {
 		if (shot->intersects(*it)) {
 			this->score += ASTEROID_POINTS + (this->kiaiTime ? (*it)->getSize() * 2 : (*it)->getSize());
 			shot->destroy();
+			if (!Asteroid::createNews(*it, &a, &b)) {
+				a = b = NULL;
+			}
 			(*it)->destroy();
 			this->soundManager->playDestroy();
+			break;
 		}
+	}
+
+	if (a != NULL && b != NULL) {
+		this->asteroids.push_back(a);
+		this->asteroids.push_back(b);
 	}
 }
 

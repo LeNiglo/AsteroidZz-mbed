@@ -10,23 +10,28 @@ class Asteroid
 {
 public:
 	Asteroid(const Game*);
+	Asteroid(const int&, const int&, const bool&, const float&, const short int&);
 	~Asteroid();
-	void					draw(sf::RenderWindow*);
-	bool					move(Player*, const Game*);
-	sf::RectangleShape 		*getBody() const;
-	int						getX() const;
-	int						getY() const;
-	int						getSize() const;
-	void					destroy();
+	static bool					createNews(const Asteroid*, Asteroid**, Asteroid**);
+	void						draw(sf::RenderWindow*);
+	bool						move(Player*, const Game*);
+	sf::RectangleShape 			*getBody() const;
+	int							getX() const;
+	int							getY() const;
+	int							getSize() const;
+	bool						getDirection() const;
+	float						getA() const;
+	float						getB() const;
+	void						destroy();
 private:
-	bool					intersects(const Player*);
+	bool						intersects(const Player*);
 private:
-	int						size;
-	int						x;
-	bool					direction;
-	float					a;
-	short int				b;
-	sf::RectangleShape 		*body;
+	int							size;
+	int							x;
+	bool						direction;
+	float						a;
+	short int					b;
+	sf::RectangleShape 			*body;
 };
 
 # include "Game.hpp"

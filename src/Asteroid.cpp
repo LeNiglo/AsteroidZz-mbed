@@ -17,9 +17,31 @@ Asteroid::Asteroid(const Game *game)
 	}
 }
 
+Asteroid::Asteroid(const int &size, const int &x, const bool &direction, const float &a, const short int &b)
+{
+	this->size = size;
+	this->a = a;
+	this->b = b;
+	this->direction = direction;
+	this->x = x;
+	this->body = new sf::RectangleShape(sf::Vector2f(this->size, this->size));
+	this->body->setFillColor(sf::Color(100 + rand() % 156, 100 + rand() % 156, 100 + rand() % 156));
+}
+
 Asteroid::~Asteroid()
 {
 	delete this->body;
+}
+
+bool					Asteroid::createNews(const Asteroid *old, Asteroid **a, Asteroid **b)
+{
+	if (old->getSize() < ASTEROID_SIZE * ASTEROID_SPLIT) {
+		return false;
+	}
+
+	*a = new Asteroid((old->getSize() / ASTEROID_SPLIT), (old->getX() + ((old->getSize() - (old->getSize() / ASTEROID_SPLIT)) / 2)), old->getDirection(), old->getA(), (old->getB() + ((old->getSize() - (old->getSize() / ASTEROID_SPLIT)) / 2)));
+	*b = new Asteroid((old->getSize() / ASTEROID_SPLIT), (old->getX() + ((old->getSize() - (old->getSize() / ASTEROID_SPLIT)) / 2)), old->getDirection(), -old->getA(), ((old->getB() + ((old->getSize() - (old->getSize() / ASTEROID_SPLIT)) / 2)) + 2 * old->getA() * (old->getX() + ((old->getSize() - (old->getSize() / ASTEROID_SPLIT)) / 2))));
+	return true;
 }
 
 void					Asteroid::draw(sf::RenderWindow *window)
@@ -77,4 +99,19 @@ int						Asteroid::getY() const
 int						Asteroid::getSize() const
 {
 	return this->size;
+}
+
+bool					Asteroid::getDirection() const
+{
+	return this->direction;
+}
+
+float					Asteroid::getA() const
+{
+	return this->a;
+}
+
+float					Asteroid::getB() const
+{
+	return this->b;
 }
