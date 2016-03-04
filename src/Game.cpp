@@ -4,6 +4,7 @@ Game::Game()
 {
 	this->videoMode = Game::findVideoMode();
 	this->soundManager = new SoundManager();
+	this->aiManager = new AIManager();
 	this->player = new Player();
 	this->asteroids = std::list<Asteroid*>();
 	this->score = 0;
@@ -28,6 +29,7 @@ Game::~Game()
 	delete this->window;
 	delete this->player;
 	delete this->soundManager;
+	delete this->aiManager;
 	std::list<Asteroid*>::iterator it = this->asteroids.begin();
 	while (it != this->asteroids.end()) {
 		Asteroid *ptr = *it;
@@ -161,8 +163,8 @@ sf::VideoMode			Game::findVideoMode()
 }
 
 /**
-*	GETTERS
-*/
+ *	GETTERS
+ */
 
 Player*					Game::getPlayer() const
 {
@@ -187,4 +189,9 @@ unsigned long int		Game::getScore() const
 SoundManager*			Game::getSoundManager() const
 {
 	return this->soundManager;
+}
+
+AIManager*				Game::getAiManager() const
+{
+	return this->aiManager;
 }

@@ -10,7 +10,7 @@ endif()
 # (you can also set it on the command line: -D CMAKE_BUILD_TYPE=Release)
 
 set(asteroidzz_VERSION_MAJOR 1)
-set(asteroidzz_VERSION_MINOR 1)
+set(asteroidzz_VERSION_MINOR 2)
 configure_file(
 	"${PROJECT_SOURCE_DIR}/inc/config.h.in"
 	"${PROJECT_BINARY_DIR}/config.h"
@@ -50,10 +50,10 @@ if (Boost_FOUND)
 	target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif ()
 
-find_package(Lua51 REQUIRED)
+find_package(Lua 5.2 REQUIRED)
 if (LUA_FOUND)
-	include_directories(${LUA_INCLUDE_DIRS})
-	target_link_libraries(${PROJECT_NAME} ${LUA_LIBRAIRIES})
+	include_directories(${LUA_INCLUDE_DIR})
+	target_link_libraries(${PROJECT_NAME} ${LUA_LIBRARIES})
 endif ()
 
 

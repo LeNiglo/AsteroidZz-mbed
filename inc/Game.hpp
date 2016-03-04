@@ -7,6 +7,7 @@
 # include "Player.hpp"
 # include "Asteroid.hpp"
 # include "SoundManager.hpp"
+# include "AIManager.hpp"
 
 class Game
 {
@@ -24,6 +25,7 @@ public:
 	bool					getKiaiTime() const;
 	unsigned long int		getScore() const;
 	SoundManager			*getSoundManager() const;
+	AIManager				*getAiManager() const;
 	void					checkShot(Shot*);
 private:
 	static sf::VideoMode	findVideoMode();
@@ -31,6 +33,7 @@ private:
 	Player					*player;
 	sf::RenderWindow		*window;
 	SoundManager			*soundManager;
+	AIManager				*aiManager;
 	sf::VideoMode			videoMode;
 	sf::Font				font;
 	sf::Text				scoreText;
