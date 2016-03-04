@@ -38,6 +38,7 @@ private:
 	sf::Font				font;
 	sf::Text				scoreText;
 	std::list<Asteroid*>	asteroids;
+	bool					paused;
 	unsigned long int		score;
 	bool					kiaiTime;
 	unsigned int			nextKiai;

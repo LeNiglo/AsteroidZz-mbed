@@ -10,6 +10,7 @@ Game::Game()
 	this->score = 0;
 	this->nextKiai = 0;
 	this->kiaiTime = false;
+	this->paused = false;
 	if (!this->soundManager->init()) {
 		std::cerr << "Can't load all sounds." << std::endl;
 	}
@@ -42,14 +43,19 @@ Game::~Game()
 void					Game::loop()
 {
 	this->window->setVerticalSyncEnabled(true);
+	this->window->setKeyRepeatEnabled(false);
+	this->window->setMouseCursorVisible(false);
 	this->delta = this->next = 0;
 	while (this->window->isOpen() && this->player->isAlive()) {
 		if (!this->eventHandling()) {
 			continue;
 		}
-		this->move();
+		if (!this->paused) {
+			this->factory();
+			this->move();
+		}
 		this->draw();
-		this->factory();
+
 	}
 }
 
@@ -62,9 +68,16 @@ bool					Game::eventHandling()
 			return false;
 		}
 		if (event.type == sf::Event::KeyPressed) {
-			if (event.key.code == sf::Keyboard::Escape) {
-				window->close();
-				return false;
+			switch (event.key.code) {
+				case sf::Keyboard::Escape:
+					window->close();
+					return false;
+				case sf::Keyboard::Space:
+					this->player->toggleClock();
+					this->paused = !this->paused;
+					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -104,6 +117,9 @@ void 					Game::draw()
 	}
 	if (this->kiaiTime) {
 		ss << "\nKIAI TIME !";
+	}
+	if (this->paused) {
+		ss << "\nPAUSED ...";
 	}
 	this->scoreText.setString(ss.str());
 	this->window->draw(this->scoreText);
@@ -178,8 +194,8 @@ sf::VideoMode			Game::findVideoMode()
 }
 
 /**
- *	GETTERS
- */
+*	GETTERS
+*/
 
 Player*					Game::getPlayer() const
 {

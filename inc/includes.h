@@ -10,6 +10,7 @@
 # include <SFML/Audio.hpp>
 
 # include "MbedIOException.hpp"
+# include <sftools/Chronometer.hpp>
 
 class Game;
 class Asteroid;

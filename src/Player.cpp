@@ -14,6 +14,7 @@ Player::Player(const std::string &name)
 	this->body->setOutlineColor(sf::Color::White);
 	this->body->setOutlineThickness(1);
 	this->initSerial();
+	this->pClock.reset(true);
 }
 
 Player::~Player()
@@ -23,7 +24,7 @@ Player::~Player()
 	std::cout << "Player " << this->name << " deleted." << std::endl;
 }
 
-bool				Player::initSerial()
+bool					Player::initSerial()
 {
 	try {
 		this->serial = new SerialReader();
@@ -41,12 +42,12 @@ bool				Player::initSerial()
 	}
 }
 
-void 				Player::hit()
+void 					Player::hit()
 {
 	--this->life;
 }
 
-void				Player::move(Game *game)
+void					Player::move(Game *game)
 {
 	try {
 		t_accel data;
@@ -74,14 +75,14 @@ void				Player::move(Game *game)
 	}
 }
 
-void 				Player::handleShots(Game *game, t_accel *data)
+void 					Player::handleShots(Game *game, t_accel *data)
 {
 	if (this->ammo > 0) {
 		if (this->pClock.getElapsedTime().asMilliseconds() > PLAYER_SHOT_DELTA) {
 			if (data->up || data->right || data->down || data->left) {
 				this->shoot(data);
 				game->getSoundManager()->playShot();
-				this->pClock.restart();
+				this->pClock.reset(true);
 			}
 		}
 	} else {
@@ -92,7 +93,7 @@ void 				Player::handleShots(Game *game, t_accel *data)
 	}
 }
 
-void 				Player::shoot(t_accel *data)
+void 					Player::shoot(t_accel *data)
 {
 	int incX = data->right ? 5 : data->left ? -5 : 0;
 	int incY = data->up ? -5 : data->down ? 5 : 0;
@@ -102,7 +103,7 @@ void 				Player::shoot(t_accel *data)
 	--this->ammo;
 }
 
-void				Player::getAccelData(t_accel *data)
+void					Player::getAccelData(t_accel *data)
 {
 	this->serial->poke();
 	std::istringstream s(this->serial->getLine());
@@ -133,7 +134,7 @@ void				Player::getAccelData(t_accel *data)
 	data->fire = boost::lexical_cast<bool>(sFire) == 0 ? false : true;
 }
 
-void 				Player::draw(sf::RenderWindow *window, const Game *game)
+void 					Player::draw(sf::RenderWindow *window, const Game *game)
 {
 	std::list<Shot*>::iterator it = this->shots.begin();
 	while (it != this->shots.end()) {
@@ -148,41 +149,46 @@ void 				Player::draw(sf::RenderWindow *window, const Game *game)
 	window->draw(*this->body);
 }
 
+sf::Time				Player::toggleClock()
+{
+	return this->pClock.toggle();
+}
+
 /**
 *	GETTERS
 */
 
-bool				Player::isAlive()
+bool					Player::isAlive()
 {
 	return this->life > 0;
 }
 
-std::string			Player::getName() const
+std::string				Player::getName() const
 {
 	return this->name;
 }
 
-int					Player::getX() const
+int						Player::getX() const
 {
 	return boost::numeric_cast<int>(this->x);
 }
 
-int					Player::getY() const
+int						Player::getY() const
 {
 	return boost::numeric_cast<int>(this->y);
 }
 
-int					Player::getLife() const
+int						Player::getLife() const
 {
 	return this->life;
 }
 
-int					Player::getAmmo() const
+int						Player::getAmmo() const
 {
 	return this->ammo;
 }
 
-sf::RectangleShape*	Player::getBody() const
+sf::RectangleShape*		Player::getBody() const
 {
 	return this->body;
 }
