@@ -32,5 +32,5 @@ build-unix/*
 !build-unix/.gitkeep
 build-xcode/*
 !build-xcode/.gitkeep
-build-vs/*
-!build-vs/.gitkeep
+build-codeblocks/*
+!build-codeblocks/.gitkeep

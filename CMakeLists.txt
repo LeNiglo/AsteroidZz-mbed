@@ -9,6 +9,14 @@ if (CMAKE_BUILD_TYPE STREQUAL "")
 endif()
 # (you can also set it on the command line: -D CMAKE_BUILD_TYPE=Release)
 
+if (${UNIX})
+    set(PREFIX_DFLT "/usr/local")
+elseif (${WIN32})
+    set(PREFIX_DFLT "$ENV{PROGRAM_FILES}")
+else()
+    message( FATAL_ERROR "Target system is unknown! In that case YOU have to specify -DPREFIX=<path>" )
+endif()
+
 set(asteroidzz_VERSION_MAJOR 1)
 set(asteroidzz_VERSION_MINOR 2)
 configure_file(
@@ -49,6 +57,7 @@ if (Boost_FOUND)
 	include_directories(${Boost_INCLUDE_DIRS})
 	target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif ()
+
 
 find_package(Lua 5.2 REQUIRED)
 if (LUA_FOUND)
