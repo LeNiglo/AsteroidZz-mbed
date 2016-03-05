@@ -25,7 +25,7 @@ public:
 	Player(const std::string&);
 	~Player();
 	void					move(Game*);
-	void 					hit();
+	void 					hit(const Game*);
 	void 					handleShots(Game*, t_accel*);
 	void					shoot(t_accel*);
 	void					draw(sf::RenderWindow*, const Game*);

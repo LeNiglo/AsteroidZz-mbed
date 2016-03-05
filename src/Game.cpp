@@ -4,7 +4,7 @@ Game::Game()
 {
 	this->videoMode = Game::findVideoMode();
 	this->soundManager = new SoundManager();
-	// this->aiManager = new AIManager();
+	this->aiManager = new AIManager();
 	this->player = new Player();
 	this->asteroids = std::list<Asteroid*>();
 	this->score = 0;
@@ -23,6 +23,10 @@ Game::Game()
 	this->scoreText.setStyle(sf::Text::Bold);
 	this->scoreText.setPosition(15, 0);
 	this->window = new sf::RenderWindow(this->videoMode, WINDOW_TITLE);
+	sf::Vector2f center = this->window->getView().getCenter();
+	sf::Listener::setPosition(center.x, center.y, 100.0f);
+	sf::Listener::setDirection(0, 0, -1.0f);
+	sf::Listener::setGlobalVolume(100.0f);
 }
 
 Game::~Game()
@@ -30,7 +34,7 @@ Game::~Game()
 	delete this->window;
 	delete this->player;
 	delete this->soundManager;
-	// delete this->aiManager;
+	delete this->aiManager;
 	std::list<Asteroid*>::iterator it = this->asteroids.begin();
 	while (it != this->asteroids.end()) {
 		Asteroid *ptr = *it;
@@ -46,6 +50,7 @@ void					Game::loop()
 	this->window->setKeyRepeatEnabled(false);
 	this->window->setMouseCursorVisible(false);
 	this->delta = this->next = 0;
+	this->soundManager->getKiai()->play();
 	while (this->window->isOpen() && this->player->isAlive()) {
 		if (!this->eventHandling()) {
 			continue;
@@ -143,7 +148,7 @@ void 					Game::factory()
 	++this->score;
 	if (this->score > KIAI_THRESHOLD && this->score % (KIAI_THRESHOLD + this->nextKiai) < KIAI_DURATION) {
 		if (this->kiaiTime == false) {
-			this->soundManager->playKiai();
+			this->soundManager->getKiai()->play();
 		}
 		this->kiaiTime = true;
 	} else {
@@ -167,8 +172,9 @@ void					Game::checkShot(Shot *shot)
 			if (!Asteroid::createNews(*it, &a, &b)) {
 				a = b = NULL;
 			}
+			this->soundManager->getDestroy()->setPosition((*it)->getX(), (*it)->getY(), 0);
+			this->soundManager->getDestroy()->play();
 			(*it)->destroy();
-			this->soundManager->playDestroy();
 			break;
 		}
 	}
@@ -222,7 +228,7 @@ SoundManager*			Game::getSoundManager() const
 	return this->soundManager;
 }
 
-// AIManager*				Game::getAiManager() const
-// {
-//	return this->aiManager;
-// }
+AIManager*				Game::getAiManager() const
+{
+	return this->aiManager;
+}

@@ -3,7 +3,7 @@
 
 # include "variables.h"
 # include "includes.h"
-// # include "selene.h"
+# include "selene.h"
 
 # define LUA_FILE "./resources/ai.lua"
 
@@ -12,7 +12,7 @@ class 				AIManager
 public:
 	AIManager();
 private:
-	// sel::State		state;
+	sel::State		state;
 };
 
 #endif /* _AIMANAGER_HPP_ */

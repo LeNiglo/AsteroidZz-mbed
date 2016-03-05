@@ -55,7 +55,7 @@ bool					Asteroid::move(Player *player, const Game *game)
 	this->x += (this->direction ? 1 : -1) * (game->getKiaiTime() ? 2 : 1) * WINDOW_SPEED;
 
 	if (this->intersects(player)) {
-		player->hit();
+		player->hit(game);
 	}
 
 	if (this->x > static_cast<int>(game->getVideoMode().width) || this->x < -this->size) {

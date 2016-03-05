@@ -42,7 +42,7 @@ bool					Player::initSerial()
 	}
 }
 
-void 					Player::hit()
+void 					Player::hit(const Game *game)
 {
 	--this->life;
 }
@@ -81,14 +81,15 @@ void 					Player::handleShots(Game *game, t_accel *data)
 		if (this->pClock.getElapsedTime().asMilliseconds() > PLAYER_SHOT_DELTA) {
 			if (data->up || data->right || data->down || data->left) {
 				this->shoot(data);
-				game->getSoundManager()->playShot();
+				game->getSoundManager()->getShot()->setPosition((float) (this->x + PLAYER_SIZE_X / 2), (float) (this->y + PLAYER_SIZE_Y / 2), 0.0f);
+				game->getSoundManager()->getShot()->play();
 				this->pClock.reset(true);
 			}
 		}
 	} else {
 		if (this->pClock.getElapsedTime().asMilliseconds() > (PLAYER_SHOT_DELTA * PLAYER_SHOT_AMMO)) {
 			this->ammo = PLAYER_SHOT_AMMO;
-			game->getSoundManager()->playReload();
+			game->getSoundManager()->getReload()->play();
 		}
 	}
 }
