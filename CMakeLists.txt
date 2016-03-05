@@ -50,11 +50,11 @@ if (Boost_FOUND)
 	target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif ()
 
-find_package(Lua 5.2 REQUIRED)
-if (LUA_FOUND)
-	include_directories(${LUA_INCLUDE_DIR})
-	target_link_libraries(${PROJECT_NAME} ${LUA_LIBRARIES})
-endif ()
+#find_package(Lua 5.2 REQUIRED)
+#if (LUA_FOUND)
+#	include_directories(${LUA_INCLUDE_DIR})
+#	target_link_libraries(${PROJECT_NAME} ${LUA_LIBRARIES})
+#endif ()
 
 
 # Install target
