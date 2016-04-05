@@ -28,9 +28,5 @@
 *.app
 asteroidzz
 
-build-unix/*
-!build-unix/.gitkeep
-build-xcode/*
-!build-xcode/.gitkeep
-build-codeblocks/*
-!build-codeblocks/.gitkeep
+build-*/*
+!build-*/.gitkeep
