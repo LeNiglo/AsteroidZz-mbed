@@ -17,8 +17,8 @@ else()
     message( FATAL_ERROR "Target system is unknown! In that case YOU have to specify -DPREFIX=<path>" )
 endif()
 
-set(asteroidzz_VERSION_MAJOR 1)
-set(asteroidzz_VERSION_MINOR 2)
+set(${PROJECT_NAME}_VERSION_MAJOR 1)
+set(${PROJECT_NAME}_VERSION_MINOR 3)
 configure_file(
 	"${PROJECT_SOURCE_DIR}/inc/config.h.in"
 	"${PROJECT_BINARY_DIR}/config.h"
@@ -28,12 +28,14 @@ include_directories("${PROJECT_SOURCE_DIR}/inc")
 
 # Define sources and executable
 file(GLOB ALL_SRCS "src/*.cpp")
+file(GLOB ALL_HEADERS "inc/*.h" "inc/*.hh" "inc/*.hpp")
+add_executable(${PROJECT_NAME} ${ALL_SRCS} ${ALL_HEADERS})
 
-add_executable(${PROJECT_NAME} ${ALL_SRCS})
+# C++11
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD_REQUIRED ON)
 
-if (CMAKE_GENERATOR STREQUAL Xcode)
+if (CMAKE_GENERATOR STREQUAL Xcode OR MSVC)
 	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION "${PROJECT_BINARY_DIR}/Debug/.")
 	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION "${PROJECT_BINARY_DIR}/Release/.")
 else ()
@@ -70,6 +72,6 @@ install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 # CPack packaging
 include(InstallRequiredSystemLibraries)
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
-set(CPACK_PACKAGE_VERSION_MAJOR "${asteroidzz_VERSION_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${asteroidzz_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${${PROJECT_NAME}_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${${PROJECT_NAME}_VERSION_MINOR}")
 include(CPack)

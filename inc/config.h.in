@@ -1,7 +1,7 @@
 #ifndef _CONFIG_H_
 # define _CONFIG_H_
 
-# define asteroidzz_VERSION_MAJOR @asteroidzz_VERSION_MAJOR@
-# define asteroidzz_VERSION_MINOR @asteroidzz_VERSION_MINOR@
+# define VERSION_MAJOR @asteroidzz_VERSION_MAJOR@
+# define VERSION_MINOR @asteroidzz_VERSION_MINOR@
 
 #endif /* _CONFIG_H_ */
